@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US Citizenship Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question label {
+            display: block;
+            margin: 5px 0;
+        }
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .submit-button:hover {
+            background: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9ffe9;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>US Citizenship Test</h1>
+        <p>Answer all 100 questions below and click "Submit" to see your score.</p>
+        <form id="citizenship-test">
+            <div id="questions"></div>
+            <button type="button" class="submit-button" onclick="gradeTest()">Submit</button>
+        </form>
+        <div id="results" class="results" style="display: none;"></div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "What is the name of the national anthem?", options: ['America the Beautiful', 'The Star-Spangled Banner', "My Country, 'Tis of Thee", 'God Bless America'], answer: "The Star-Spangled Banner" },
+            { question: "Who is the 'Father of Our Country'?", options: ['George Washington', 'Thomas Jefferson', 'John Adams', 'Benjamin Franklin'], answer: "George Washington" },
+            { question: "What territory did the United States buy from France in 1803?", options: ['Alaska', 'Louisiana Territory', 'Hawaii', 'Texas'], answer: "Louisiana Territory" },
+            { question: "Name one state that borders Canada.", options: ['Washington', 'New York', 'Montana', 'All of the above'], answer: "All of the above" },
+            { question: "Who was President during World War I?", options: ['Theodore Roosevelt', 'Woodrow Wilson', 'Herbert Hoover', 'Franklin D. Roosevelt'], answer: "Woodrow Wilson" },
+            { question: "What is the name of the U.S. national holiday celebrated on July 4th?", options: ['Veterans Day', 'Memorial Day', 'Independence Day', 'Labor Day'], answer: "Independence Day" },
+            { question: "Name one war fought by the United States in the 1800s.", options: ['War of 1812', 'Mexican-American War', 'Civil War', 'All of the above'], answer: "All of the above" },  
+            { question: "What is the minimum age to be elected President of the United States?", options: ['25', '30', '35', '40'], answer: "35" },
+            { question: "What ocean is on the East Coast of the United States?", options: ['Pacific Ocean', 'Atlantic Ocean', 'Indian Ocean', 'Arctic Ocean'], answer: "Atlantic Ocean" },
+            { question: "What are the two longest rivers in the United States?", options: ['Missouri and Mississippi Rivers', 'Colorado and Ohio Rivers', 'Rio Grande and Mississippi Rivers', 'Missouri and Colorado Rivers'], answer: "Missouri and Mississippi Rivers" },
+            { question: "What is one reason colonists came to America?", options: ['Freedom', 'Political liberty', 'Economic opportunity', 'All of the above'], answer: "All of the above" },
+            { question: "Who lived in America before the Europeans arrived?", options: ['American Indians', 'Africans', 'Asians', 'None of the above'], answer: "American Indians" },
+            { question: "What group of people was taken to America and sold as slaves?", options: ['Europeans', 'Africans', 'Asians', 'Native Americans'], answer: "Africans" },
+            { question: "Why did the colonists fight the British?", options: ['Because of high taxes', 'Because the British army stayed in their houses', 'Because they didn’t have self-government', 'All of the above'], answer: "All of the above" },
+            { question: "When was the Declaration of Independence adopted?", options: ['July 4, 1776', 'July 4, 1787', 'July 4, 1791', 'July 4, 1775'], answer: "July 4, 1776" },
+            { question: "There were 13 original states. Name three.", options: ['New York, Virginia, Georgia', 'Florida, Texas, California', 'Alaska, Hawaii, Oregon', 'Montana, Illinois, Ohio'], answer: "New York, Virginia, Georgia" },
+            { question: "What happened at the Constitutional Convention?", options: ['The Constitution was written', 'The Bill of Rights was written', 'The Declaration of Independence was signed', 'The Articles of Confederation were ratified'], answer: "The Constitution was written" },
+            { question: "When was the Constitution written?", options: ['1787', '1776', '1781', '1790'], answer: "1787" },
+            { question: "What is one thing Benjamin Franklin is famous for?", options: ['U.S. diplomat', 'Oldest member of the Constitutional Convention', 'First Postmaster General of the United States', 'All of the above'], answer: "All of the above" },
+            { question: "Who was the first Postmaster General of the United States?", options: ['George Washington', 'Benjamin Franklin', 'Thomas Jefferson', 'John Adams'], answer: "Benjamin Franklin" },
+            { question: "Who was President during the Great Depression and World War II?", options: ['Franklin D. Roosevelt', 'Herbert Hoover', 'Harry S. Truman', 'Dwight D. Eisenhower'], answer: "Franklin D. Roosevelt" },
+            { question: "Name one U.S. territory.", options: ['Guam', 'Puerto Rico', 'American Samoa', 'All of the above'], answer: "All of the above" },
+            { question: "Why does the flag have 13 stripes?", options: ['Because the stripes represent the original colonies', 'Because the stripes represent the number of wars fought', 'Because the stripes represent the number of states', 'None of the above'], answer: "Because the stripes represent the original colonies" },
+            { question: "Why does the flag have 50 stars?", options: ['Because there are 50 states', 'Because there are 50 colonies', 'Because there are 50 presidents', 'Because there are 50 territories'], answer: "Because there are 50 states" },
+            { question: "What is the name of the Speaker of the House of Representatives now?", options: ['Kevin McCarthy', 'Nancy Pelosi', 'Paul Ryan', 'John Boehner'], answer: "Kevin McCarthy" },
+            { question: "What is the highest court in the United States?", options: ['The Supreme Court', 'The Federal Court', 'The Circuit Court', 'The Court of Appeals'], answer: "The Supreme Court" },
+            { question: "What is one power of the states?", options: ['Provide schooling and education', 'Provide protection (police)', 'Approve zoning and land use', 'All of the above'], answer: "All of the above" },
+            { question: "What is one responsibility only for United States citizens?", options: ['Serve on a jury', 'Pay taxes', 'Obey the law', 'Vote'], answer: "Serve on a jury" },
+            { question: "What are two rights of everyone living in the United States?", options: ['Freedom of expression and freedom to petition the government', 'Freedom of religion and freedom of speech', 'Right to bear arms and right to vote', 'All of the above'], answer: "Freedom of expression and freedom to petition the government" },
+            { question: "Name one U.S. state that borders Mexico.", options: ['California', 'Texas', 'Arizona', 'All of the above'], answer: "All of the above" },
+            { question: "What is the supreme law of the land?", options: ["The Constitution", "The Bill of Rights", "The Declaration of Independence", "The Articles of Confederation"], answer: "The Constitution" },
+            { question: "What does the Constitution do?", options: ["Sets up the government", "Defines the government", "Protects basic rights of Americans", "All of the above"], answer: "All of the above" },
+            { question: "The idea of self-government is in the first three words of the Constitution. What are these words?", options: ["We the People", "We the Citizens", "We the Government", "We the States"], answer: "We the People" },
+            { question: "What is an amendment?", options: ["A change to the Constitution", "An addition to the Constitution", "Both A and B", "None of the above"], answer: "Both A and B" },
+            { question: "What do we call the first ten amendments to the Constitution?", options: ["The Bill of Rights", "The Articles of Confederation", "The Declaration of Independence", "The Federalist Papers"], answer: "The Bill of Rights" },
+            { question: "What is one right or freedom from the First Amendment?", options: ["Speech", "Religion", "Press", "All of the above"], answer: "All of the above" },
+            { question: "How many amendments does the Constitution have?", options: ["27", "10", "23", "33"], answer: "27" },
+            { question: "What did the Declaration of Independence do?", options: ["Announced our independence", "Declared our independence", "Said that the United States is free", "All of the above"], answer: "All of the above" },
+            { question: "What are two rights in the Declaration of Independence?", options: ["Life and liberty", "Property and happiness", "Voting and speech", "Liberty and equality"], answer: "Life and liberty" },
+            { question: "What is freedom of religion?", options: ["You can practice any religion or not practice a religion.", "You must practice a religion.", "You can practice one of two approved religions.", "Religion is forbidden."], answer: "You can practice any religion or not practice a religion." },
+            { question: "What is the economic system in the United States?", options: ["Capitalist economy", "Socialist economy", "Communist economy", "Mixed economy"], answer: "Capitalist economy" },
+            { question: "What is the rule of law?", options: ["Everyone must follow the law", "Leaders must obey the law", "Government must obey the law", "All of the above"], answer: "All of the above" },
+            { question: "Name one branch or part of the government.", options: ["Congress", "The President", "The Courts", "All of the above"], answer: "All of the above" },
+            { question: "What stops one branch of government from becoming too powerful?", options: ["Checks and balances", "Separation of powers", "The Constitution", "Both A and B"], answer: "Both A and B" },
+            { question: "Who is in charge of the executive branch?", options: ["The President", "Congress", "The Supreme Court", "The Cabinet"], answer: "The President" },
+            { question: "Who makes federal laws?", options: ["Congress", "The Senate", "The House of Representatives", "All of the above"], answer: "Congress" },
+            { question: "What are the two parts of the U.S. Congress?", options: ["House of Representatives and Senate", "House of Lords and Senate", "Assembly and Senate", "House of Commons and Senate"], answer: "House of Representatives and Senate" },
+            { question: "How many U.S. Senators are there?", options: ["100", "50", "435", "200"], answer: "100" },
+            { question: "We elect a U.S. Senator for how many years?", options: ["6", "4", "2", "8"], answer: "6" },
+            { question: "The House of Representatives has how many voting members?", options: ["435", "100", "50", "200"], answer: "435" },
+            { question: "We elect a U.S. Representative for how many years?", options: ["2", "4", "6", "8"], answer: "2" },
+            { question: "Who does a U.S. Senator represent?", options: ["All people of the state", "Only the people who voted for them", "Only the state government", "All citizens of the U.S."], answer: "All people of the state" },
+            { question: "Why do some states have more Representatives than other states?", options: ["Because of the state’s population", "Because of the state’s land area", "Because of the state’s wealth", "Because of the state’s founding date"], answer: "Because of the state’s population" },
+            { question: "We elect a President for how many years?", options: ["4", "6", "2", "8"], answer: "4" },
+            { question: "In what month do we vote for President?", options: ["November", "October", "December", "January"], answer: "November" },
+            { question: "What is the name of the President of the United States now?", options: ["Joe Biden", "Donald Trump", "Barack Obama", "Kamala Harris"], answer: "Joe Biden" },
+            { question: "What is the name of the Vice President of the United States now?", options: ["Kamala Harris", "Mike Pence", "Nancy Pelosi", "Chuck Schumer"], answer: "Kamala Harris" },
+            { question: "If the President can no longer serve, who becomes President?", options: ["The Vice President", "The Speaker of the House", "The Chief Justice", "The Secretary of State"], answer: "The Vice President" },
+            { question: "If both the President and the Vice President can no longer serve, who becomes President?", options: ["The Speaker of the House", "The Secretary of State", "The Chief Justice", "The President Pro Tempore"], answer: "The Speaker of the House" },
+            { question: "Who is the Commander in Chief of the military?", options: ["The President", "The Secretary of Defense", "The Vice President", "The Speaker of the House"], answer: "The President" },
+            { question: "Who signs bills to become laws?", options: ["The President", "The Vice President", "The Speaker of the House", "The Chief Justice"], answer: "The President" },
+            { question: "Who vetoes bills?", options: ["The President", "The Vice President", "The Speaker of the House", "The Chief Justice"], answer: "The President" },
+            { question: "What does the President’s Cabinet do?", options: ["Advises the President", "Makes laws", "Enforces laws", "Declares war"], answer: "Advises the President" },
+            { question: "What are two Cabinet-level positions?", options: ["Secretary of State and Secretary of Education", "Secretary of Health and Secretary of the Navy", "Chief Justice and Secretary of Labor", "Senator and Secretary of Commerce"], answer: "Secretary of State and Secretary of Education" },
+            { question: "What is the capital of the United States?", options: ["New York City", "Los Angeles", "Washington, D.C.", "Chicago"], answer: "Washington, D.C." },
+            { question: "What are the two major political parties in the United States?", options: ["Democratic and Republican", "Democratic and Libertarian", "Republican and Green", "Independent and Libertarian"], answer: "Democratic and Republican" },
+            { question: "Who wrote the Declaration of Independence?", options: ["George Washington", "James Madison", "Alexander Hamilton", "Thomas Jefferson"], answer: "Thomas Jefferson" },
+            { question: "When was the Constitution written?", options: ["1776", "1787", "1781", "1790"], answer: "1787" },
+            { question: "What is one responsibility that is only for United States citizens?", options: ["Serve on a jury", "Pay taxes", "Obey the law", "Respect the rights of others"], answer: "Serve on a jury" },
+            { question: "What is the name of the Speaker of the House of Representatives now?", options: ["Nancy Pelosi", "Kevin McCarthy", "John Boehner", "Paul Ryan"], answer: "Kevin McCarthy" },
+            { question: "What is one power of the federal government?", options: ["To print money", "To declare war", "To create an army", "All of the above"], answer: "All of the above" },
+            { question: "What is the highest court in the United States?", options: ["The Supreme Court", "The Court of Appeals", "The Federal Court", "The Circuit Court"], answer: "The Supreme Court" },
+            { question: "Who was the first President?", options: ["Abraham Lincoln", "Thomas Jefferson", "George Washington", "Benjamin Franklin"], answer: "George Washington" },
+            { question: "What did Susan B. Anthony do?", options: ["Fought for civil rights", "Fought for women’s rights", "Was a U.S. Senator", "All of the above"], answer: "Fought for women’s rights" },
+            { question: "Name one war fought by the United States in the 1900s.", options: ["World War I", "World War II", "Korean War", "All of the above"], answer: "All of the above" },
+            { question: "Who did the United States fight in World War II?", options: ["Germany, Japan, and Italy", "Germany, Austria, and Hungary", "Germany, Japan, and China", "Germany, Russia, and Japan"], answer: "Germany, Japan, and Italy" },
+            { question: "Before he was President, Eisenhower was a general. What war was he in?", options: ["World War I", "World War II", "The Korean War", "The Vietnam War"], answer: "World War II" },
+            { question: "What movement tried to end racial discrimination?", options: ["Civil Rights Movement", "Women's Suffrage Movement", "Labor Movement", "Environmental Movement"], answer: "Civil Rights Movement" },
+            { question: "What ocean is on the West Coast of the United States?", options: ["Atlantic Ocean", "Pacific Ocean", "Indian Ocean", "Arctic Ocean"], answer: "Pacific Ocean" },
+            { question: "Name one U.S. territory.", options: ["Puerto Rico", "Hawaii", "Alaska", "Guam"], answer: "Puerto Rico" },
+            { question: "What is the longest river in the United States?", options: ["Missouri River", "Mississippi River", "Colorado River", "Rio Grande"], answer: "Missouri River" },
+            { question: "What is the state capital of California?", options: ["Los Angeles", "San Francisco", "Sacramento", "San Diego"], answer: "Sacramento" },
+            { question: "Who was the main author of the U.S. Constitution?", options: ["George Washington", "James Madison", "Thomas Jefferson", "Benjamin Franklin"], answer: "James Madison" },
+            { question: "What is the supreme law of the land?", options: ["The Constitution", "The Declaration of Independence", "The Bill of Rights", "The Articles of Confederation"], answer: "The Constitution" },
+            { question: "What does the Constitution do?", options: ["Sets up the government", "Defines the government", "Protects basic rights of Americans", "All of the above"], answer: "All of the above" },
+            { question: "What is an amendment?", options: ["A change to the Constitution", "An addition to the Constitution", "Both A and B", "None of the above"], answer: "Both A and B" },
+            { question: "What do we call the first ten amendments to the Constitution?", options: ["The Bill of Rights", "The Preamble", "The Articles of Confederation", "The Declaration of Independence"], answer: "The Bill of Rights" },
+            { question: "What is one right or freedom from the First Amendment?", options: ["Speech", "Religion", "Assembly", "All of the above"], answer: "All of the above" },
+            { question: "How many amendments does the Constitution have?", options: ["27", "10", "23", "33"], answer: "27" },
+            { question: "What did the Emancipation Proclamation do?", options: ["Freed the slaves", "Ended the Civil War", "Gave women the right to vote", "Established the U.S. Constitution"], answer: "Freed the slaves" },
+            { question: "What did Martin Luther King Jr. do?", options: ["Fought for civil rights", "Became a U.S. Senator", "Was a U.S. President", "All of the above"], answer: "Fought for civil rights" },
+            { question: "What is the capital of your state?", options: ["Answers will vary", "Sacramento", "Albany", "Austin"], answer: "Answers will vary" },
+            { question: "What is the political party of the President now?", options: ["Democratic", "Republican", "Independent", "Libertarian"], answer: "Democratic" },
+            { question: "How old do citizens have to be to vote for President?", options: ["18", "21", "16", "25"], answer: "18" },
+            { question: "What is one promise you make when you become a United States citizen?", options: ["To support and defend the Constitution", "To pay more taxes", "To move to another country", "To join the military"], answer: "To support and defend the Constitution" },
+            { question: "Who was President during the Great Depression and World War II?", options: ["Franklin D. Roosevelt", "Herbert Hoover", "Harry S. Truman", "Dwight D. Eisenhower"], answer: "Franklin D. Roosevelt" },
+            { question: "What did the Declaration of Independence do?", options: ["Announced our independence from Great Britain", "Declared our independence from Great Britain", "Said that the United States is free from Great Britain", "All of the above"], answer: "All of the above" },
+            { question: "What is the economic system in the United States?", options: ["Capitalist economy", "Communist economy", "Socialist economy", "Mixed economy"], answer: "Capitalist economy" },
+            { question: "Who makes federal laws?", options: ["Congress", "The President", "The Supreme Court", "The States"], answer: "Congress" },
+            { question: "What are the two parts of the U.S. Congress?", options: ["The Senate and House of Representatives", "The Senate and the Cabinet", "The House of Lords and the House of Commons", "The Supreme Court and the President"], answer: "The Senate and House of Representatives" },
+        ];
+
+        function loadQuestions() {
+            const questionsDiv = document.getElementById('questions');
+            questions.forEach((q, index) => {
+                const questionHtml = `
+                    <div class="question">
+                        <p><strong>${index + 1}. ${q.question}</strong></p>
+                        ${q.options.map(option => `
+                            <label>
+                                <input type="radio" name="question${index}" value="${option}"> ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                questionsDiv.innerHTML += questionHtml;
+            });
+        }
+
+        function gradeTest() {
+            let score = 0;
+            questions.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selected && selected.value === q.answer) {
+                    score++;
+                }
+            });
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = `<p>You scored ${score} out of ${questions.length}.</p>`;
+        }
+
+        loadQuestions();
+
+        function gradeTest() {
+    let allAnswered = true;
+
+    questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="question${index}"]:checked`);
+        if (!selected) {
+            allAnswered = false;
+        }
+    });
+
+    if (!allAnswered) {
+        alert("Please answer all questions before submitting the test.");
+        return;
+    }
+
+    let score = 0;
+    questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="question${index}"]:checked`);
+        if (selected && selected.value === q.answer) {
+            score++;
+        }
+    });
+
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.style.display = 'block';
+    resultsDiv.innerHTML = `<p>You scored ${score} out of ${questions.length}.</p>`;
+}
+
+    </script>
+</body>
+</html>
